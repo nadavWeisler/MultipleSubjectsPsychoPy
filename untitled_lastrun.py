@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2024.2.1),
-    on Tue 08 Oct 2024 15:59:49
+    on Tue 15 Oct 2024 16:50:39
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -261,18 +261,6 @@ def setupDevices(expInfo, thisExp, win):
         deviceManager.addDevice(
             deviceClass='keyboard', deviceName='defaultKeyboard', backend='iohub'
         )
-    if deviceManager.getDevice('key_resp') is None:
-        # initialise key_resp
-        key_resp = deviceManager.addDevice(
-            deviceClass='keyboard',
-            deviceName='key_resp',
-        )
-    if deviceManager.getDevice('key_resp_2') is None:
-        # initialise key_resp_2
-        key_resp_2 = deviceManager.addDevice(
-            deviceClass='keyboard',
-            deviceName='key_resp_2',
-        )
     # return True if completed successfully
     return True
 
@@ -373,21 +361,23 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
     # Start Code - component code to be run after the window creation
     
     # --- Initialize components for Routine "p1" ---
-    key_resp = keyboard.Keyboard(deviceName='key_resp')
-    key_resp_2 = keyboard.Keyboard(deviceName='key_resp_2')
     # Run 'Begin Experiment' code from code
     import serial
     
     port = serial.Serial("/dev/ttyUSB0", baudrate=115200)
     trigger = int(10)
     
-    win0 = visual.Window(size=(1920, 1080), screen=1, fullscr=True)
+    first = 1
+    second = 2
+    
+    win0 = visual.Window(size=(1920, 1080), screen=first, fullscr=True)
     win0.checkTiming=False
-    win1 = visual.Window(size=(1920, 1080), screen=2, fullscr=True)
+    win1 = visual.Window(size=(1920, 1080), screen=second, fullscr=True)
     win1.checkTiming=False
     
-    
-    
+    kb0 = hardware.keyboard.Keyboard(deviceName="kb0", device=0)
+    kb1 = hardware.keyboard.Keyboard(deviceName="kb1", device=second)
+    2
     active_txt = visual.TextStim(win0, text='Close your eyes and1 press the space bar at the same time.\n' + 
     'Count to 10  in your head, and then open your eyes release the spacebar')
     wait_txt = visual.TextStim(win1, text='The other player is about to close his eyes')
@@ -463,73 +453,11 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         # create an object to store info about Routine p1
         p1 = data.Routine(
             name='p1',
-            components=[key_resp, key_resp_2],
+            components=[],
         )
         p1.status = NOT_STARTED
         continueRoutine = True
         # update component parameters for each repeat
-        # create starting attributes for key_resp
-        key_resp.keys = []
-        key_resp.rt = []
-        _key_resp_allKeys = []
-        # create starting attributes for key_resp_2
-        key_resp_2.keys = []
-        key_resp_2.rt = []
-        _key_resp_2_allKeys = []
-        # Run 'Begin Routine' code from kb_1
-        kb0 = hardware.keyboard.Keyboard(deviceName="kb0", device=0)
-        
-        if kb0.status == NOT_STARTED and tThisFlip >= 0.0 - frameTolerance:
-            # keep track of start time/frame for later
-            kb0.frameNStart = frameN  # exact frame index
-            kb0.tStart = t  # local t and not account for scr refresh
-            kb0.tStartRefresh = tThisFlipGlobal  # on global time
-            win0.timeOnFlip(kb0, 'tStartRefresh')  # time at next scr refresh
-            # add timestamp to datafile
-            thisExp.timestampOnFlip(win0, 'kb0.started')
-            # update status
-            kb0.status = STARTED
-            # keyboard checking is just starting
-            waitOnFlip = True
-            win.callOnFlip(kb0.clock.reset)  # t=0 on next screen flip
-            win.callOnFlip(kb0.clearEvents, eventType='keyboard') 
-            
-        if kb0.status == STARTED and not waitOnFlip:
-            theseKeys = kb0.getKeys(keyList=['space'], ignoreKeys=["escape"], waitRelease=True)
-            _key_resp_allKeys.extend(theseKeys)
-            if len(_key_resp_allKeys):
-                kb0.keys = _key_resp_allKeys[-1].name  # just the last key pressed
-                kb0.rt = _key_resp_allKeys[-1].rt
-                kb0.duration = _key_resp_allKeys[-1].duration
-                # a response ends the routine
-                continueRoutine = False
-        # Run 'Begin Routine' code from kb_2
-        kb1 = hardware.keyboard.Keyboard(deviceName="kb1", device=1)
-        
-        if kb1.status == NOT_STARTED and tThisFlip >= 0.0 - frameTolerance:
-            # keep track of start time/frame for later
-            kb1.frameNStart = frameN  # exact frame index
-            kb1.tStart = t  # local t and not account for scr refresh
-            kb1.tStartRefresh = tThisFlipGlobal  # on global time
-            win1.timeOnFlip(kb1, 'tStartRefresh')  # time at next scr refresh
-            # add timestamp to datafile
-            thisExp.timestampOnFlip(win1, 'kb1.started')
-            # update status
-            kb1.status = STARTED
-            # keyboard checking is just starting
-            waitOnFlip = True
-            win.callOnFlip(kb1.clock.reset)  # t=0 on next screen flip
-            win.callOnFlip(kb1.clearEvents, eventType='keyboard') 
-            
-        if kb1.status == STARTED and not waitOnFlip:
-            theseKeys = kb1.getKeys(keyList=['space'], ignoreKeys=["escape"], waitRelease=True)
-            _key_resp_allKeys.extend(theseKeys)
-            if len(_key_resp_allKeys):
-                kb1.keys = _key_resp_allKeys[-1].name  # just the last key pressed
-                kb1.rt = _key_resp_allKeys[-1].rt
-                kb1.duration = _key_resp_allKeys[-1].duration
-                # a response ends the routine
-                continueRoutine = False
         # Run 'Begin Routine' code from code
         wait_txt.setText('The other player is about to close his eyes')
         
@@ -586,67 +514,16 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
             tThisFlipGlobal = win.getFutureFlipTime(clock=None)
             frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
             # update/draw components on each frame
-            
-            # *key_resp* updates
-            waitOnFlip = False
-            
-            # if key_resp is starting this frame...
-            if key_resp.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-                # keep track of start time/frame for later
-                key_resp.frameNStart = frameN  # exact frame index
-                key_resp.tStart = t  # local t and not account for scr refresh
-                key_resp.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(key_resp, 'tStartRefresh')  # time at next scr refresh
-                # add timestamp to datafile
-                thisExp.timestampOnFlip(win, 'key_resp.started')
-                # update status
-                key_resp.status = STARTED
-                # keyboard checking is just starting
-                waitOnFlip = True
-                win.callOnFlip(key_resp.clock.reset)  # t=0 on next screen flip
-                win.callOnFlip(key_resp.clearEvents, eventType='keyboard')  # clear events on next screen flip
-            if key_resp.status == STARTED and not waitOnFlip:
-                theseKeys = key_resp.getKeys(keyList=['space'], ignoreKeys=["escape"], waitRelease=True)
-                _key_resp_allKeys.extend(theseKeys)
-                if len(_key_resp_allKeys):
-                    key_resp.keys = _key_resp_allKeys[-1].name  # just the last key pressed
-                    key_resp.rt = _key_resp_allKeys[-1].rt
-                    key_resp.duration = _key_resp_allKeys[-1].duration
-                    # a response ends the routine
-                    continueRoutine = False
-            
-            # *key_resp_2* updates
-            waitOnFlip = False
-            
-            # if key_resp_2 is starting this frame...
-            if key_resp_2.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-                # keep track of start time/frame for later
-                key_resp_2.frameNStart = frameN  # exact frame index
-                key_resp_2.tStart = t  # local t and not account for scr refresh
-                key_resp_2.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(key_resp_2, 'tStartRefresh')  # time at next scr refresh
-                # add timestamp to datafile
-                thisExp.timestampOnFlip(win, 'key_resp_2.started')
-                # update status
-                key_resp_2.status = STARTED
-                # keyboard checking is just starting
-                waitOnFlip = True
-                win.callOnFlip(key_resp_2.clock.reset)  # t=0 on next screen flip
-                win.callOnFlip(key_resp_2.clearEvents, eventType='keyboard')  # clear events on next screen flip
-            if key_resp_2.status == STARTED and not waitOnFlip:
-                theseKeys = key_resp_2.getKeys(keyList=['space'], ignoreKeys=["escape"], waitRelease=False)
-                _key_resp_2_allKeys.extend(theseKeys)
-                if len(_key_resp_2_allKeys):
-                    key_resp_2.keys = _key_resp_2_allKeys[-1].name  # just the last key pressed
-                    key_resp_2.rt = _key_resp_2_allKeys[-1].rt
-                    key_resp_2.duration = _key_resp_2_allKeys[-1].duration
             # Run 'Each Frame' code from code
             if is_left: 
-                hold_keys = kb0.getKeys(['space'], waitRelease = False)
-                press_keys = kb0.getKeys(['space'], waitRelease = True)
+                hold_keys = kb0.getKeys(waitRelease = False)
+                press_keys = kb0.getKeys(waitRelease = True)
             else:
-                hold_keys = kb1.getKeys(['space'], waitRelease = False)
-                press_keys = kb1.getKeys(['space'], waitRelease = True)
+                hold_keys = kb1.getKeys(waitRelease = False)
+                press_keys = kb1.getKeys(waitRelease = True)
+            
+            print(hold_keys)
+            print(press_keys)
             
             if press_keys:
                 print("finish")
@@ -701,20 +578,6 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         p1.tStop = globalClock.getTime(format='float')
         p1.tStopRefresh = tThisFlipGlobal
         thisExp.addData('p1.stopped', p1.tStop)
-        # check responses
-        if key_resp.keys in ['', [], None]:  # No response was made
-            key_resp.keys = None
-        trials.addData('key_resp.keys',key_resp.keys)
-        if key_resp.keys != None:  # we had a response
-            trials.addData('key_resp.rt', key_resp.rt)
-            trials.addData('key_resp.duration', key_resp.duration)
-        # check responses
-        if key_resp_2.keys in ['', [], None]:  # No response was made
-            key_resp_2.keys = None
-        trials.addData('key_resp_2.keys',key_resp_2.keys)
-        if key_resp_2.keys != None:  # we had a response
-            trials.addData('key_resp_2.rt', key_resp_2.rt)
-            trials.addData('key_resp_2.duration', key_resp_2.duration)
         # Run 'End Routine' code from code
         print("end")
         active_txt.setAutoDraw(False)
