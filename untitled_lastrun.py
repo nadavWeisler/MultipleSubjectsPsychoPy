@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2024.2.1),
-    on Thu 28 Nov 2024 15:46:16
+    on Thu 28 Nov 2024 17:18:41
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -374,15 +374,21 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
     
     # --- Initialize components for Routine "p1" ---
     # Run 'Begin Experiment' code from code
+    import serial
+    
+    port = serial.Serial("/dev/ttyUSB0", baudrate=115200)
+    trigger_0 = int(10)
+    trigger_1 = int(11)
+    
     win0 = visual.Window(size=(1920, 1080), screen=1, fullscr=True)
     win0.checkTiming=False
     win1 = visual.Window(size=(1920, 1080), screen=2, fullscr=True)
     win1.checkTiming=False
     
-    active_txt_0 = visual.TextStim(win0, text='Close your eyes and press the space bar at the same time.\n' + 
-    'Count to 10  in your head, and then open your eyes release the spacebar')
-    active_txt_1 = visual.TextStim(win1, text='Close your eyes and press the up button at the same time.\n' + 
-    'Count to 10  in your head, and then open your eyes release the spacebar')
+    active_txt_0 = visual.TextStim(win0, text='Close your eyes and press the "a" button at the same time.\n' + 
+    'Count to 10  in your head, and then open your eyes release the "a" button')
+    active_txt_1 = visual.TextStim(win1, text='Close your eyes and press the "l" button at the same time.\n' + 
+    'Count to 10  in your head, and then open your eyes release the "l" button')
     wait_txt = visual.TextStim(win1, text='The other player is about to close his eyes')
     polygon_on = visual.Polygon(win0, pos = (0.8, 0.8), size = 1, edges=5, color="white")
     polygon_off = visual.Polygon(win0, pos = (0.8, 0.8), size = 1, edges=5, color="black")
@@ -524,7 +530,11 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
             frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
             # update/draw components on each frame
             # Run 'Each Frame' code from code
-            if  not clicked and key_resp_2.keys in ['space', 'up']:
+            if  not clicked and key_resp_2.keys in ['a', 'l']:
+                if is_left:
+                    port.write(trigger_0.to_bytes(1, 'big'))
+                else:
+                    port.write(trigger_1.to_bytes(1, 'big'))
                 clicked = True
                 polygon_on.setAutoDraw(True)
                 polygon_off.setAutoDraw(True)
@@ -552,7 +562,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
                 win.callOnFlip(key_resp.clock.reset)  # t=0 on next screen flip
                 win.callOnFlip(key_resp.clearEvents, eventType='keyboard')  # clear events on next screen flip
             if key_resp.status == STARTED and not waitOnFlip:
-                theseKeys = key_resp.getKeys(keyList=['space', 'up'], ignoreKeys=["escape"], waitRelease=True)
+                theseKeys = key_resp.getKeys(keyList=['a', 'l'], ignoreKeys=["escape"], waitRelease=True)
                 _key_resp_allKeys.extend(theseKeys)
                 if len(_key_resp_allKeys):
                     key_resp.keys = _key_resp_allKeys[-1].name  # just the last key pressed
@@ -580,7 +590,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
                 win.callOnFlip(key_resp_2.clock.reset)  # t=0 on next screen flip
                 win.callOnFlip(key_resp_2.clearEvents, eventType='keyboard')  # clear events on next screen flip
             if key_resp_2.status == STARTED and not waitOnFlip:
-                theseKeys = key_resp_2.getKeys(keyList=['space', 'up'], ignoreKeys=["escape"], waitRelease=False)
+                theseKeys = key_resp_2.getKeys(keyList=['a', 'l'], ignoreKeys=["escape"], waitRelease=False)
                 _key_resp_2_allKeys.extend(theseKeys)
                 if len(_key_resp_2_allKeys):
                     key_resp_2.keys = _key_resp_2_allKeys[-1].name  # just the last key pressed
