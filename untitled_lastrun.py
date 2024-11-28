@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2024.2.1),
-    on Tue 15 Oct 2024 16:50:39
+    on Thu 28 Nov 2024 15:46:16
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -261,6 +261,18 @@ def setupDevices(expInfo, thisExp, win):
         deviceManager.addDevice(
             deviceClass='keyboard', deviceName='defaultKeyboard', backend='iohub'
         )
+    if deviceManager.getDevice('key_resp') is None:
+        # initialise key_resp
+        key_resp = deviceManager.addDevice(
+            deviceClass='keyboard',
+            deviceName='key_resp',
+        )
+    if deviceManager.getDevice('key_resp_2') is None:
+        # initialise key_resp_2
+        key_resp_2 = deviceManager.addDevice(
+            deviceClass='keyboard',
+            deviceName='key_resp_2',
+        )
     # return True if completed successfully
     return True
 
@@ -362,33 +374,26 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
     
     # --- Initialize components for Routine "p1" ---
     # Run 'Begin Experiment' code from code
-    import serial
-    
-    port = serial.Serial("/dev/ttyUSB0", baudrate=115200)
-    trigger = int(10)
-    
-    first = 1
-    second = 2
-    
-    win0 = visual.Window(size=(1920, 1080), screen=first, fullscr=True)
+    win0 = visual.Window(size=(1920, 1080), screen=1, fullscr=True)
     win0.checkTiming=False
-    win1 = visual.Window(size=(1920, 1080), screen=second, fullscr=True)
+    win1 = visual.Window(size=(1920, 1080), screen=2, fullscr=True)
     win1.checkTiming=False
     
-    kb0 = hardware.keyboard.Keyboard(deviceName="kb0", device=0)
-    kb1 = hardware.keyboard.Keyboard(deviceName="kb1", device=second)
-    2
-    active_txt = visual.TextStim(win0, text='Close your eyes and1 press the space bar at the same time.\n' + 
+    active_txt_0 = visual.TextStim(win0, text='Close your eyes and press the space bar at the same time.\n' + 
+    'Count to 10  in your head, and then open your eyes release the spacebar')
+    active_txt_1 = visual.TextStim(win1, text='Close your eyes and press the up button at the same time.\n' + 
     'Count to 10  in your head, and then open your eyes release the spacebar')
     wait_txt = visual.TextStim(win1, text='The other player is about to close his eyes')
-    polygon = visual.Polygon(win0, pos = (-0.8, 0.8), size = 1.5, edges=4)
-    polygon_waiting = visual.Polygon(win1, pos = (-0.8, 0.8), size = 1.5, edges=4)
+    polygon_on = visual.Polygon(win0, pos = (0.8, 0.8), size = 1, edges=5, color="white")
+    polygon_off = visual.Polygon(win0, pos = (0.8, 0.8), size = 1, edges=5, color="black")
     
     win0.flip()
     win1.flip()
     
     import random
     is_left = random.choice([False, True])
+    key_resp = keyboard.Keyboard(deviceName='key_resp')
+    key_resp_2 = keyboard.Keyboard(deviceName='key_resp_2')
     
     # create some handy timers
     
@@ -421,7 +426,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
     # set up handler to look after randomisation of conditions etc
     trials = data.TrialHandler2(
         name='trials',
-        nReps=50.0, 
+        nReps=20.0, 
         method='random', 
         extraInfo=expInfo, 
         originPath=-1, 
@@ -453,7 +458,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         # create an object to store info about Routine p1
         p1 = data.Routine(
             name='p1',
-            components=[],
+            components=[key_resp, key_resp_2],
         )
         p1.status = NOT_STARTED
         continueRoutine = True
@@ -462,26 +467,30 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         wait_txt.setText('The other player is about to close his eyes')
         
         if is_left:
-            kb0.waitKeys(keyList=['space'])
-            active_txt.win = win0
+            active_txt_0.setAutoDraw(True)
             wait_txt.win = win1
-            polygon.win = win0
-            polygon_waiting.win=win1
+            polygon_on.win = win0
+            polygon_off.win = win1
         else:
-            kb1.waitKeys(keyList=['space'])
-            active_txt.win = win1
+            active_txt_1.setAutoDraw(True)
             wait_txt.win = win0
-            polygon.win = win1
-            polygon_waiting.win=win0
+            polygon_on.win = win1
+            polygon_off.win = win0
             
         wait_txt.setAutoDraw(True)
-        active_txt.setAutoDraw(True)
-        polygon.setAutoDraw(False)
-        polygon_waiting.setAutoDraw(False)
         win0.flip()
         win1.flip()
         clicked = False
-                                    
+        
+        
+        # create starting attributes for key_resp
+        key_resp.keys = []
+        key_resp.rt = []
+        _key_resp_allKeys = []
+        # create starting attributes for key_resp_2
+        key_resp_2.keys = []
+        key_resp_2.rt = []
+        _key_resp_2_allKeys = []
         # store start times for p1
         p1.tStartRefresh = win.getFutureFlipTime(clock=globalClock)
         p1.tStart = globalClock.getTime(format='float')
@@ -515,29 +524,68 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
             frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
             # update/draw components on each frame
             # Run 'Each Frame' code from code
-            if is_left: 
-                hold_keys = kb0.getKeys(waitRelease = False)
-                press_keys = kb0.getKeys(waitRelease = True)
-            else:
-                hold_keys = kb1.getKeys(waitRelease = False)
-                press_keys = kb1.getKeys(waitRelease = True)
-            
-            print(hold_keys)
-            print(press_keys)
-            
-            if press_keys:
-                print("finish")
-                continueRoutine = False
-            
-            if  not clicked and hold_keys:
-                print("clicked")
-                port.write(trigger.to_bytes(1, 'big'))
+            if  not clicked and key_resp_2.keys in ['space', 'up']:
                 clicked = True
-                polygon.draw()
-                polygon_waiting.draw()
+                polygon_on.setAutoDraw(True)
+                polygon_off.setAutoDraw(True)
                 wait_txt.setText('The other player closed his eyes')
                 win0.flip()
                 win1.flip()
+            
+            
+            # *key_resp* updates
+            waitOnFlip = False
+            
+            # if key_resp is starting this frame...
+            if key_resp.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+                # keep track of start time/frame for later
+                key_resp.frameNStart = frameN  # exact frame index
+                key_resp.tStart = t  # local t and not account for scr refresh
+                key_resp.tStartRefresh = tThisFlipGlobal  # on global time
+                win.timeOnFlip(key_resp, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'key_resp.started')
+                # update status
+                key_resp.status = STARTED
+                # keyboard checking is just starting
+                waitOnFlip = True
+                win.callOnFlip(key_resp.clock.reset)  # t=0 on next screen flip
+                win.callOnFlip(key_resp.clearEvents, eventType='keyboard')  # clear events on next screen flip
+            if key_resp.status == STARTED and not waitOnFlip:
+                theseKeys = key_resp.getKeys(keyList=['space', 'up'], ignoreKeys=["escape"], waitRelease=True)
+                _key_resp_allKeys.extend(theseKeys)
+                if len(_key_resp_allKeys):
+                    key_resp.keys = _key_resp_allKeys[-1].name  # just the last key pressed
+                    key_resp.rt = _key_resp_allKeys[-1].rt
+                    key_resp.duration = _key_resp_allKeys[-1].duration
+                    # a response ends the routine
+                    continueRoutine = False
+            
+            # *key_resp_2* updates
+            waitOnFlip = False
+            
+            # if key_resp_2 is starting this frame...
+            if key_resp_2.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+                # keep track of start time/frame for later
+                key_resp_2.frameNStart = frameN  # exact frame index
+                key_resp_2.tStart = t  # local t and not account for scr refresh
+                key_resp_2.tStartRefresh = tThisFlipGlobal  # on global time
+                win.timeOnFlip(key_resp_2, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'key_resp_2.started')
+                # update status
+                key_resp_2.status = STARTED
+                # keyboard checking is just starting
+                waitOnFlip = True
+                win.callOnFlip(key_resp_2.clock.reset)  # t=0 on next screen flip
+                win.callOnFlip(key_resp_2.clearEvents, eventType='keyboard')  # clear events on next screen flip
+            if key_resp_2.status == STARTED and not waitOnFlip:
+                theseKeys = key_resp_2.getKeys(keyList=['space', 'up'], ignoreKeys=["escape"], waitRelease=False)
+                _key_resp_2_allKeys.extend(theseKeys)
+                if len(_key_resp_2_allKeys):
+                    key_resp_2.keys = _key_resp_2_allKeys[-1].name  # just the last key pressed
+                    key_resp_2.rt = _key_resp_2_allKeys[-1].rt
+                    key_resp_2.duration = _key_resp_2_allKeys[-1].duration
             
             # check for quit (typically the Esc key)
             if defaultKeyboard.getKeys(keyList=["escape"]):
@@ -579,20 +627,37 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         p1.tStopRefresh = tThisFlipGlobal
         thisExp.addData('p1.stopped', p1.tStop)
         # Run 'End Routine' code from code
-        print("end")
-        active_txt.setAutoDraw(False)
+        active_txt_0.setAutoDraw(False)
+        active_txt_1.setAutoDraw(False)
+        
         wait_txt.setAutoDraw(False)
-        polygon.setAutoDraw(False)
+        
+        polygon_on.setAutoDraw(False)
+        polygon_off.setAutoDraw(False)
         
         win0.flip()
         win1.flip()
         
         is_left = not is_left
+        # check responses
+        if key_resp.keys in ['', [], None]:  # No response was made
+            key_resp.keys = None
+        trials.addData('key_resp.keys',key_resp.keys)
+        if key_resp.keys != None:  # we had a response
+            trials.addData('key_resp.rt', key_resp.rt)
+            trials.addData('key_resp.duration', key_resp.duration)
+        # check responses
+        if key_resp_2.keys in ['', [], None]:  # No response was made
+            key_resp_2.keys = None
+        trials.addData('key_resp_2.keys',key_resp_2.keys)
+        if key_resp_2.keys != None:  # we had a response
+            trials.addData('key_resp_2.rt', key_resp_2.rt)
+            trials.addData('key_resp_2.duration', key_resp_2.duration)
         # the Routine "p1" was not non-slip safe, so reset the non-slip timer
         routineTimer.reset()
         thisExp.nextEntry()
         
-    # completed 50.0 repeats of 'trials'
+    # completed 20.0 repeats of 'trials'
     
     if thisSession is not None:
         # if running in a Session with a Liaison client, send data up to now
