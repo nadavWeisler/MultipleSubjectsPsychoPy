@@ -1,8 +1,8 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-This experiment was created using PsychoPy3 Experiment Builder (v2024.2.1),
-    on Thu 28 Nov 2024 17:18:41
+This experiment was created using PsychoPy3 Experiment Builder (v2024.2.4),
+    on Sun 19 Jan 2025 19:16:24
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -33,13 +33,36 @@ import sys  # to get file system encoding
 import psychopy.iohub as io
 from psychopy.hardware import keyboard
 
+# Run 'Before Experiment' code from code
+from inputs import devices, get_key
+
+def list_keyboards():
+    """List all input devices and filter for keyboards."""
+    print("Available input devices (keyboards):")
+    keyboards = [device for device in devices if "keyboard" in device.name.lower()]
+    for idx, keyboard in enumerate(keyboards):
+        print(f"{idx}: {keyboard.name} (path: {keyboard})")
+    return keyboards
+
+list_keyboards()
+
+def listen_to_keyboard(kb):
+    """Listen for key presses from a specific keyboard device."""
+    print(f"Listening to keyboard: {keyboard.name} (path: {keyboard.fn})")
+    try:
+            events = kb.read()  # Read events from the specific device
+            for event in events:
+                if event.ev_type == "Key" and event.state == 1:
+                    print(f"Key pressed from {keyboard.name}: {event.code}")
+    except KeyboardInterrupt:
+        print("\nExiting...")
 # --- Setup global variables (available in all functions) ---
 # create a device manager to handle hardware (keyboards, mice, mirophones, speakers, etc.)
 deviceManager = hardware.DeviceManager()
 # ensure that relative paths start from the same directory as this script
 _thisDir = os.path.dirname(os.path.abspath(__file__))
 # store info about the experiment session
-psychopyVersion = '2024.2.1'
+psychopyVersion = '2024.2.4'
 expName = 'untitled'  # from the Builder filename that created this script
 # information about this experiment
 expInfo = {
@@ -126,7 +149,7 @@ def setupData(expInfo, dataDir=None):
     thisExp = data.ExperimentHandler(
         name=expName, version='',
         extraInfo=expInfo, runtimeInfo=None,
-        originPath='/home/thought-dynamics-lab-linux/Documents/GitHub/MultipleSubjectsPsychoPy/untitled_lastrun.py',
+        originPath='/home/tdl-linux/Desktop/MultipleSubjectsPsychoPy/untitled_lastrun.py',
         savePickle=True, saveWideText=True,
         dataFileName=dataDir + os.sep + filename, sortColumns='time'
     )
@@ -194,11 +217,11 @@ def setupWindow(expInfo=None, win=None):
         # if not given a window to setup, make one
         win = visual.Window(
             size=_winSize, fullscr=_fullScr, screen=0,
-            winType='pyglet', allowStencil=False,
+            winType='pyglet', allowGUI=False, allowStencil=False,
             monitor='testMonitor', color=[0,0,0], colorSpace='rgb',
             backgroundImage='', backgroundFit='none',
             blendMode='avg', useFBO=True,
-            units='height', 
+            units='height',
             checkTiming=False  # we're going to do this ourselves in a moment
         )
     else:
@@ -213,7 +236,6 @@ def setupWindow(expInfo=None, win=None):
         if win._monitorFrameRate is None:
             win._monitorFrameRate = win.getActualFrameRate(infoMsg='Attempting to measure frame rate of screen, please wait...')
         expInfo['frameRate'] = win._monitorFrameRate
-    win.mouseVisible = False
     win.hideMessage()
     # show a visual indicator if we're in piloting mode
     if PILOTING and prefs.piloting['showPilotingIndicator']:
@@ -347,6 +369,8 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
     """
     # mark experiment as started
     thisExp.status = STARTED
+    # make sure window is set to foreground to prevent losing focus
+    win.winHandle.activate()
     # make sure variables created by exec are available globally
     exec = environmenttools.setExecEnvironment(globals())
     # get device handles from dict of input devices
